@@ -1,0 +1,22 @@
+{
+    "name": "kahil-raghed/masarat-ly-php-sdk",
+    "description": "Package to process payments throught https://masarat.ly payment gateway",
+    "type": "library",
+    "keywords": ["payment", "masarat", "sdk", "php"],
+    "require": {
+        "php": ">=7.4",
+        "guzzlehttp/guzzle": "^6.5"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "KahilRaghed\\MasaratLy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Raghed Kahil",
+            "email": "kahilraghed@gmail.com"
+        }
+    ]
+}
