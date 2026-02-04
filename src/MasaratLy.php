@@ -66,7 +66,7 @@ class MasaratLy
 
         $this->setToken($data['content']['value']);
 
-        return $response;
+        return $data;
     }
 
     /**

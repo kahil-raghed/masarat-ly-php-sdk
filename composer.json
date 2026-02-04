@@ -1,6 +1,7 @@
 {
     "name": "kahil-raghed/masarat-ly-php-sdk",
     "description": "Package to process payments throught https://masarat.ly payment gateway",
+    "homepage": "https://github.com/kahil-raghed/masarat-ly-php-sdk",
     "type": "library",
     "keywords": ["payment", "masarat", "sdk", "php"],
     "require": {
