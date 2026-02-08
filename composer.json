@@ -5,8 +5,8 @@
     "type": "library",
     "keywords": ["payment", "masarat", "sdk", "php"],
     "require": {
-        "php": ">=7.4",
-        "guzzlehttp/guzzle": "^6.5"
+        "php": "^7.4||^8.0",
+        "guzzlehttp/guzzle": "^6.5||^7.0"
     },
     "scripts": {
         "test": "./vendor/bin/pest"
