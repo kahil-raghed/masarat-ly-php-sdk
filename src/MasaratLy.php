@@ -66,17 +66,17 @@ class MasaratLy
      * "tag": -1,
      * "value": "ey*****************************************************"
      * }
-     * @param string $userId
+     * @param int $userId
      * @param string $pin
-     * @param string $providerId
-     * @param string $authUserType
+     * @param int $providerId
+     * @param int $authUserType
      * @return ApiResponse
      */
     public function signIn(
-        string $userId,
+        int $userId,
         string $pin,
-        string $providerId,
-        string $authUserType
+        int $providerId,
+        int $authUserType
     ) {
         $payload = [
             'userId' => $userId,

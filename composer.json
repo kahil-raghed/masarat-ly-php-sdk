@@ -8,10 +8,14 @@
         "php": ">=7.4",
         "guzzlehttp/guzzle": "^6.5"
     },
+    "scripts": {
+        "test": "./vendor/bin/pest"
+    },
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "KahilRaghed\\MasaratLy\\": "src/"
+            "KahilRaghed\\MasaratLy\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "authors": [
@@ -19,5 +23,13 @@
             "name": "Raghed Kahil",
             "email": "kahilraghed@gmail.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "pestphp/pest": "^4.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
 }
