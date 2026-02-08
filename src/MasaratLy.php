@@ -8,11 +8,14 @@ class MasaratLy
 {
     protected string $baseUrl;
     protected string $token = '';
-
+    private Guzzle $client;
+    
     public function __construct(
-        string $baseUrl
+        string $baseUrl,
+        array $clientConfig = []
     ) {
         $this->baseUrl = $baseUrl;
+        $this->client = new Guzzle($clientConfig);
     }
 
 
@@ -33,13 +36,42 @@ class MasaratLy
 
     public function getHttpClient(): Guzzle
     {
-        return new Guzzle([
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
+        return $this->client;
     }
 
+    public function callApi($path, $data, $headers = [])
+    {
+        $client = $this->getHttpClient();
+
+
+        $response = $client->post($this->baseUrl . $path, [
+            'json' => $data,
+            'headers' => $headers,
+        ]);
+
+        $rawData = $response->getBody()->getContents();
+
+        $data = json_decode($rawData, true);
+
+        return ApiResponse::fromBody($data);
+    }
+
+    /**
+     * Example content:  
+     * {
+     * "validTo": "2026-03-21T19:48:15Z",
+     * "refreshToken": null,
+     * "systemIdentity": "123456",
+     * "creds": 2,
+     * "tag": -1,
+     * "value": "ey*****************************************************"
+     * }
+     * @param string $userId
+     * @param string $pin
+     * @param string $providerId
+     * @param string $authUserType
+     * @return ApiResponse
+     */
     public function signIn(
         string $userId,
         string $pin,
@@ -53,24 +85,19 @@ class MasaratLy
             'authUserType' => $authUserType,
         ];
 
-        $response = $this->getHttpClient()->post(
-            $this->baseUrl . self::SIGN_IN_PATH,
-            [
-                'json' => $payload,
-            ]
-        );
-
-        $content = $response->getBody()->getContents();
-
-        $data = json_decode($content, true);
-
-        $this->setToken($data['content']['value']);
-
-        return $data;
+        return $this->callApi(self::SIGN_IN_PATH, $payload);
     }
 
     /**
-     * 
+     * Example content:  
+     * {
+     * "validTo": "2026-03-21T19:48:15Z",
+     * "refreshToken": null,
+     * "systemIdentity": "123456",
+     * "creds": 2,
+     * "tag": -1,
+     * "value": "ey*****************************************************"
+     * }
      * @param float $amount
      * @param string $identityCard Customer Card ID: All banks must enter 9 digits (card number + prefix), In the case of the Trade and Development Bank, 10 digits (card number only) must be entered
      * @param string $transactionId
@@ -89,21 +116,13 @@ class MasaratLy
             'onlineOperation' => $onlineOperation,
         ];
 
-        $response = $this->getHttpClient()->post(
-            $this->baseUrl . self::OPEN_SESSION_PATH,
+        return $this->callApi(
+            self::OPEN_SESSION_PATH,
+            $payload,
             [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->getToken(),
-                ],
-                'json' => $payload,
+                'Authorization' => 'Bearer ' . $this->getToken(),
             ]
         );
-
-        $content = $response->getBody()->getContents();
-
-        $data = json_decode($content, true);
-
-        return $data;
     }
 
     /**
@@ -119,20 +138,12 @@ class MasaratLy
             'otp' => $otp,
         ];
 
-        $response = $this->getHttpClient()->post(
-            $this->baseUrl . self::COMPLETE_SESSION_PATH . '/' . $sessionToken,
+        return $this->callApi(
+            self::COMPLETE_SESSION_PATH,
+            $payload,
             [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $sessionToken,
-                ],
-                'json' => $payload,
+                'Authorization' => 'Bearer ' . $sessionToken,
             ]
         );
-
-        $content = $response->getBody()->getContents();
-
-        $data = json_decode($content, true);
-
-        return $data;
     }
 }
