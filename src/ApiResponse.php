@@ -25,7 +25,7 @@ class ApiResponse {
     public static function fromBody(array $data) {
         return new ApiResponse(
             $data['type'] ?? 3,
-            $data['message'] ?? "",
+            $data['message'] ?? implode(",\n", $data['messages'] ?? []),
             $data['traceId'] ?? "",
             $data['content'] ?? []
         );
