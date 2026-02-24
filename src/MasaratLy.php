@@ -9,6 +9,8 @@ class MasaratLy
     protected string $baseUrl;
     protected string $token = '';
     private Guzzle $client;
+    protected string|array $cert = '';
+    protected string|array $sslKey = '';
     
     public function __construct(
         string $baseUrl,
@@ -39,15 +41,52 @@ class MasaratLy
         return $this->client;
     }
 
+    /**
+     * Set the client certificate for mutual TLS.
+     * @param string|array $cert Path to a PEM file, or [path, password]
+     */
+    public function setCert(string|array $cert): void
+    {
+        $this->cert = $cert;
+    }
+
+    public function getCert(): string|array
+    {
+        return $this->cert;
+    }
+
+    /**
+     * Set the client SSL private key for mutual TLS.
+     * @param string|array $sslKey Path to a private key file, or [path, password]
+     */
+    public function setSslKey(string|array $sslKey): void
+    {
+        $this->sslKey = $sslKey;
+    }
+
+    public function getSslKey(): string|array
+    {
+        return $this->sslKey;
+    }
+
     public function callApi($path, $data, $headers = [])
     {
         $client = $this->getHttpClient();
 
-
-        $response = $client->post($this->baseUrl . $path, [
+        $options = [
             'json' => $data,
             'headers' => $headers,
-        ]);
+        ];
+
+        if ($this->cert !== '') {
+            $options['cert'] = $this->cert;
+        }
+
+        if ($this->sslKey !== '') {
+            $options['ssl_key'] = $this->sslKey;
+        }
+
+        $response = $client->post($this->baseUrl . $path, $options);
 
         $rawData = $response->getBody()->getContents();
 
