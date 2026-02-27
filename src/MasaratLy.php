@@ -9,6 +9,9 @@ class MasaratLy
     protected string $baseUrl;
     protected string $token = '';
     private Guzzle $client;
+
+    private $sslCert = null;
+    private $sslKey = null;
     
     public function __construct(
         string $baseUrl,
@@ -16,6 +19,14 @@ class MasaratLy
     ) {
         $this->baseUrl = $baseUrl;
         $this->client = new Guzzle($clientConfig);
+    }
+
+    public function setSslCertificate(
+        $sslCert = null,
+        $sslKey = null,
+    ) {
+        $this->sslCert = $sslCert;
+        $this->sslKey = $sslKey;
     }
 
 
@@ -44,10 +55,20 @@ class MasaratLy
         $client = $this->getHttpClient();
 
 
-        $response = $client->post($this->baseUrl . $path, [
+        $requestOptions = [
             'json' => $data,
             'headers' => $headers,
-        ]);
+        ];
+
+        if ($this->sslCert) {
+            $requestOptions['cert'] = $this->sslCert;
+        }
+
+        if ($this->sslKey) {
+            $requestOptions['ssl_key'] = $this->sslKey;
+        }
+
+        $response = $client->post($this->baseUrl . $path, $requestOptions);
 
         $rawData = $response->getBody()->getContents();
 
